@@ -1,5 +1,5 @@
 export const aboutObjTwo = {
-    id: "about",
+    id: "about2",
     lightBg: false,
     lightText: true,
     lightTextDesc: true,

@@ -23,8 +23,8 @@ const register = (req, res) => {
             if (data) {
                 return res.status(401).json({ error: 'User already exist' })
             }
-           /*  cloudinary.uploader.upload(req.file.path, (error, result) => { */
-                bcrypt.genSalt(10, (err, salt, result) => {
+            cloudinary.uploader.upload(req.file.path, (error, result) => {
+                bcrypt.genSalt(10, (err, salt) => {
                     bcrypt.hash(req.body.user_password, salt, (err, hash) => {
                         const user = new User({
                             user_email: req.body.user_email,
@@ -34,7 +34,7 @@ const register = (req, res) => {
                             user_phone_number: req.body.user_phone_number,
                             user_adress: req.body.user_adress,
                             user_gender: req.body.user_gender,
-                            /* user_img_url: result.url, */
+                            user_img_url: result.url,
                             freelance_id: req.body.freelance_id,
                             user_isFreelance: req.body.user_isFreelance,
                         })
@@ -46,8 +46,7 @@ const register = (req, res) => {
                                     message: "Handling POST requests to /register",
                                     createdUser: result
                                 });
-                            })
-                            .catch(err => {
+                            }).catch(err => {
                                 console.log(err);
                                 res.status(500).json({
                                     error: err
@@ -56,7 +55,7 @@ const register = (req, res) => {
                     });
                 });
             })
-        /* }) */
+        })
 
 }
 

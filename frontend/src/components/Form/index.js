@@ -93,6 +93,15 @@ const useStyles = makeStyles((theme) => ({
             fontSize: "12px",
             marginLeft: "6px",
         },
+    margin: {
+        marginBottom: "12px"
+    },
+    paddingRight: {
+        padding: theme.spacing(0, .5, 0, 0)
+    },
+    paddingLeft: {
+        padding: theme.spacing(0, 0, 0, .5)
+    }
 }));
 
 const Form = () => {
@@ -106,21 +115,31 @@ const Form = () => {
     const [phoneNumber, setPhoneNumber] = useState(""); // phone number value
     const [adress, setAdress] = useState(""); // adress value
     const [email, setEmail] = useState(""); // email value
-    const [values, setValues] = React.useState({
+    const [password, setPassword] = React.useState({
         password: "", // password value
         showPassword: false,
     });
-    const [passwordConfi, setPasswordConfi] = useState(""); // password confirmation value
+    const [passwordConfi, setPasswordConfi] = React.useState({
+        password: "", // password confirmation value
+        showPassword: false,
+    });
     const [gender, setGender] = useState("homme"); // gender value
     
+
+    // setValues 
+
     const handleClickShowPassword = () => {
-        setValues({ ...values, showPassword: !values.showPassword });
+        setPassword({ ...password, showPassword: !password.showPassword });
     };
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
-
-    // set values
+    const handleClickShowPasswordConfi = () => {
+        setPasswordConfi({ ...passwordConfi, showPassword: !passwordConfi.showPassword });
+    };
+    const handleMouseDownPasswordConfi = (event) => {
+        event.preventDefault();
+    };
     const handleChangeFirstName = (e) => {
         setFirstName(e.target.value);
     };
@@ -133,11 +152,11 @@ const Form = () => {
     const handleChangeEmail = (e) => {
         setEmail(e.target.value);
     };
-    const handleChange = (prop) => (e) => {
-        setValues({ ...values, [prop]: e.target.value });
+    const handleChangePassword = (prop) => (e) => {
+        setPassword({ ...password, [prop]: e.target.value });
     };
-    const handleChangePasswordConfi = (e) => {
-        setPasswordConfi(e.target.value);
+    const handleChangePasswordConfi = (prop) => (e) => {
+        setPasswordConfi({ ...password, [prop]: e.target.value });
     };
     const handleChangeAdress = (e) => {
         setAdress(e.target.value);
@@ -155,7 +174,7 @@ const Form = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             user_email: email,
-            user_password: values.password,
+            user_password: password.password,
             user_first_name: firstName,
             user_last_name: lastName,
             user_phone_number: phoneNumber,
@@ -173,10 +192,10 @@ const Form = () => {
         .then(history.push("/"))
         .catch((err) => {
             console.log(err);
-            console.log(values.password, email, firstName);
+            console.log(password.password, email, firstName);
             setIsLoading(false);
         });
-        console.log(values.password, email, firstName, lastName, adress, phoneNumber, gender, passwordConfi);
+        console.log(password.password, email, firstName, lastName, adress, phoneNumber, gender, passwordConfi.password);
     };
     const error = () => {
         alert("Mot de passe non identique !");
@@ -186,16 +205,16 @@ const Form = () => {
         <Container component="main" maxWidth="sm">
             <CssBaseline />
             <div className={classes.paper}>
-            <div className={classes.icon}>
-                <Avatar className={classes.avatar}>
-                <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5" className={classes.h1}>
-                S'inscrire
-                </Typography>
-            </div>
+                <div className={classes.icon}>
+                    <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5" className={classes.h1}>
+                    S'inscrire
+                    </Typography>
+                </div>
             <form className={classes.root} id="form">
-                <Grid container spacing={6}>
+                <Grid container spacing={7}>
                 <Grid xs={6}>
                     <TextField
                     value={lastName}
@@ -209,7 +228,7 @@ const Form = () => {
                     autoComplete="name"
                     autoFocus
                     onChange={handleChangeLastName}
-                    className={classes.field}
+                    className={classes.paddingRight}
                     />
                 </Grid>
                 <Grid xs={6}>
@@ -225,6 +244,7 @@ const Form = () => {
                     autoComplete="name"
                     autoFocus
                     onChange={handleChangeFirstName}
+                    className={classes.paddingLeft}
                     />
                 </Grid>
                 <Grid xs={6}>
@@ -239,6 +259,7 @@ const Form = () => {
                     autoComplete="tel"
                     autoFocus
                     onChange={handleChangePhoneNumber}
+                    className={classes.paddingRight}
                     />
                 </Grid>
                 <Grid xs={6}>
@@ -247,6 +268,7 @@ const Form = () => {
                     margin="normal"
                     fullWidth
                     required
+                    className={classes.paddingLeft}
                     >
                     <InputLabel id="demo-simple-select-filled-label">
                         Votre localité
@@ -326,42 +348,59 @@ const Form = () => {
                 </Grid>
                 <Grid xs={12}>
                 <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                    <InputLabel htmlFor="outlined-adornment-password">Mot de passe</InputLabel>
                     <OutlinedInput
                         id="outlined-adornment-password"
-                        type={values.showPassword ? 'text' : 'password'}
-                        value={values.password}
-                        onChange={handleChange('password')}
+                        type={password.showPassword ? 'text' : 'password'}
+                        value={password.password}
+                        onChange={handleChangePassword('password')}
                         endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            >
-                            {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
+                            <InputAdornment position="end">
+                                <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                                >
+                                {password.showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
                         }
                         labelWidth={70}
+                        required
+                        margin="normal"
+                        name="password"
+                        autoComplete="new-password"
                     />
                 </FormControl>
                 </Grid>
-                <Grid xs={12}>
-                    <TextField
-                    value={passwordConfi}
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Confirmez votre Mot de passe"
-                    type="password"
-                    id="password-confirm"
-                    autoComplete="new-password"
-                    onChange={handleChangePasswordConfi}
-                    />
+                <Grid sl={12}>
+                    <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
+                        <InputLabel htmlFor="outlined-adornment-password">Confirmez votre mot de passe</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-password"
+                            type={passwordConfi.showPassword ? 'text' : 'password'}
+                            value={passwordConfi.password}
+                            onChange={handleChangePasswordConfi('password')}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPasswordConfi}
+                                    onMouseDown={handleMouseDownPasswordConfi}
+                                    edge="end"
+                                    >
+                                    {passwordConfi.showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            labelWidth={70}
+                            required
+                            margin="normal"
+                            name="password"
+                            autoComplete="new-password"
+                        />
+                    </FormControl>
                 </Grid>
                 <Grid>
                     <FormControl component="fieldset">
@@ -393,7 +432,7 @@ const Form = () => {
                 variant="outlined"
                 color="primary"
                 className={classes.submit}
-                onClick={passwordConfi === values.password ? submit : error}
+                onClick={passwordConfi.password === password.password ? submit : error}
                 >
                 {isLoading ? <Spinner style={{width: '100%', height: '100%'}} /> : "S'inscrire"}
                 </Button>
