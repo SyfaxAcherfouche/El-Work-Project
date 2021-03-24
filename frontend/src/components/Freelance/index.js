@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Spinner from "../Spinner/index";
 
 import {
@@ -17,17 +17,16 @@ import {
     Competence,
     LinkToProfile,
 } from "./freelanceElements";
-import cookie from 'react-cookies'
 
-const FreelanceGrid = () => {
+const FreelanceGrid = ({userContext}) => {
     const [items, setItems] = useState([])
     const [freelance, setFreelance] = useState(items.filter((el) => el.user_isFreelance === true))
     const [search, setSearch] = useState("");
     const [filteredFreelance, setFilteredFreelance] = useState([]);
-  
-    const token = cookie.load('token')
+    const { token, setToken } = useContext(userContext);
     
     let numberOfFreelance = filteredFreelance.length;
+
     const fetchFreelance = async () => {
       const data = await fetch('http://localhost:4000/users');
       const items = await data.json()
@@ -36,9 +35,11 @@ const FreelanceGrid = () => {
       setItems(items)
       console.log(freelance, "je suis freelance filtré");
     };
+
     useEffect(() => {
       fetchFreelance();
     }, []);
+
     useEffect(() => {
       setFilteredFreelance(
         items
@@ -73,7 +74,11 @@ const FreelanceGrid = () => {
         <CardsHeader>
           <div>
             <NumberOfFreelance>
-              {numberOfFreelance} FreeWorkers Disponibles{" "}
+              {numberOfFreelance === 0
+                ? `Aucun Freelance "${search}" Disponible`
+                : search === ""
+                ? ` ${numberOfFreelance} Freelances Disponibles`
+                : ` ${numberOfFreelance} Freelances "${search}" Disponibles`}{" "}
             </NumberOfFreelance>
           </div>
           <Input
@@ -98,17 +103,17 @@ const FreelanceGrid = () => {
               <LinkToProfile
                 key={key}
                 to={
-                  token === 'undefined' || token === undefined
+                  token
                     ? {
+                        pathname: "/freelance/profile/" + item._id,
+                        state: { freelance: item },
+                      }
+                    : {
                         pathname: "/login",
                         state: {
                           previousPath: "/freelance/profile/" + item._id,
                           freelance: item,
                         },
-                      }
-                    : {
-                        pathname: "/freelance/profile/" + item._id,
-                        state: { freelance: item },
                       }
                 }
               >

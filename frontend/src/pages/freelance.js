@@ -3,12 +3,12 @@ import FreelanceGrid from '../components/Freelance/index'
 import FreelanceSidebar from '../components/Freelance-Sider/index'
 import FreelanceNavbar from '../components/FreelanceNavbar/index'
 
-const Freelance = ({item}) => {
+const Freelance = ({item, userContext}) => {
 
     return (
         <div style={{margin: '0', padding: '0'}}>
             <div style={{position: 'fixed', width: '100vw', height: '12vh', top:'0', left:'0', right: '0', zIndex: '999' }} >
-            <FreelanceNavbar item={item} />
+            <FreelanceNavbar item={item} userContext={userContext} />
             </div>
             <div style={{display: 'flex', position: 'absolute', top: '15vh'}}>
                 <div style={{
@@ -33,7 +33,7 @@ const Freelance = ({item}) => {
                     maxWidth: '100%',
                     backgroundColor: '#ffffff'
                     }}>
-                    <FreelanceGrid />
+                    <FreelanceGrid userContext={userContext} />
                 </div>
             </div>
             

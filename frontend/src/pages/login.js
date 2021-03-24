@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link as LinkN, useHistory } from 'react-router-dom'
 import cookie from 'react-cookies'
 import {
@@ -64,9 +64,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Login = () => {
+const Login = (props) => {
+  const { userContext } = props
   const classes = useStyles();
-
+  const { token, setToken } = useContext(userContext);
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false) 
@@ -93,6 +94,7 @@ const Login = () => {
       .then((response) => response.json())
       .then((res) => {
         setIsLoading(false);
+        setToken({token: res.token})
         const expires = new Date();
         expires.setDate(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7 days
         cookie.save("token", res.token, {
@@ -102,13 +104,12 @@ const Login = () => {
           path: "/",
         });
       })
-      .then(history.push("/"))
       .catch((err) => {
         console.log(err);
         setIsLoading(false);
       });
       
-
+      history.push("/")
   }
   
 

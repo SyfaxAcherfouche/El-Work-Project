@@ -10,6 +10,7 @@ const addFreelance = (req, res) => {
         freelance_competences: req.body.freelance_competences,
         freelance_title: req.body.freelance_title,
         freelance_tarif: req.body.freelance_tarif,
+        freelance_description: req.body.freelance_description, 
         user_id: req.body.user_id,
         category_id: req.body.category_id
     });
@@ -58,7 +59,7 @@ const getFreelance = (req, res) => {
 }
 
 const updateFreelance = (req, res) => {
-    Freelance.findByIdAndUpdate({_id : req.params.id}, {'freelance_competences': req.body.freelance_competences, 'freelance_title': req.body.freelance_title, 'freelance_tarif': req.body.freelance_tarif })
+    Freelance.findByIdAndUpdate({_id : req.params.id}, {'freelance_competences': req.body.freelance_competences, 'freelance_title': req.body.freelance_title, 'freelance_tarif': req.body.freelance_tarif, 'freelance_description': req.body.freelance_description })
         .then(newFreelance => res.status(200).json(newFreelance))
         .catch(error => res.status(400).json(error)) 
 }

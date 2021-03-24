@@ -6,6 +6,7 @@ const freelanceSchema = new Schema({
         freelance_competences: [String],
         freelance_title: String,
         freelance_tarif: String,
+        freelance_description: String, 
         user_id: {
                 type: Schema.Types.ObjectId,
                 ref: 'User'

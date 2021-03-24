@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { FaBars } from 'react-icons/fa'
-import cookie from 'react-cookies'
 import ProfileMenu from '../ProfileMenu/index'
 
 import { 
@@ -16,9 +15,9 @@ import {
     Path
 } from './FreelanceNavbarElements'
 
-const Navbar = ({ toggle }) => {
+const Navbar = ({ toggle, userContext }) => {
     const [nav, setNav] = useState(false) 
-    const [token, setToken] = useState(null)
+    const { token, setToken } = useContext(userContext);
     const changeBackground = () => {
         if(window.scrollY >= 80) {
             setNav(true)
@@ -27,11 +26,7 @@ const Navbar = ({ toggle }) => {
         }
     } 
     window.addEventListener('scroll', changeBackground)
-
-    useEffect(() => {
-        setToken(cookie.load('token'));
-        console.log(token)
-    }, [setToken])
+    console.log(token, 'f navbar');
     return (
         <>
             <Nav className={ nav ? 'nav active' : 'nav'}>
@@ -44,29 +39,31 @@ const Navbar = ({ toggle }) => {
                     </MobileIcon>
                     <NavMenu>
                         <NavItem>
-                            <NavLinks to='besoin' className={ nav ? 'nav active' : 'nav'}>Les Besoins</NavLinks>
+                            <Path to='/besoin'>
+                                <NavLinks className={ nav ? 'nav active' : 'nav'}>Les Besoins</NavLinks>
+                            </Path>
                         </NavItem>
                         <NavItem>
-                            <Path to='/freelance'>
-                                <NavLinks to='freelance' className={ nav ? 'nav active' : 'nav'}>Nos Freelances</NavLinks>
+                            <Path to='/freelance' >
+                                <NavLinks className={ nav ? 'nav active' : 'nav'}>Nos Freelances</NavLinks>
                             </Path>
                         </NavItem>
                         <NavItem>
                             <Path to='/about'>
-                                <NavLinks className={ nav ? 'nav active' : 'nav' }>À propos</NavLinks>
+                                <NavLinks className={ nav ? 'nav active' : 'nav'}>À propos</NavLinks>
                             </Path>
                         </NavItem>
-                        { token === 'undefined' || token === undefined ? <NavItem>
+                        { token?.token ? <div> </div> : <NavItem>
                             <Path to='/login'>
-                                <NavLinks className={ nav ? 'nav active' : 'nav' }>Se connecter</NavLinks>
+                                <NavLinks className={ nav ? 'nav active' : 'nav'}>Se connecter</NavLinks>
                             </Path>
-                        </NavItem> : <div> </div>}
+                        </NavItem>  }
                     </NavMenu>
-                    { token === 'undefined' || token === undefined ? <NavBtn>
+                    { token?.token ? <ProfileMenu userContext={userContext}/> : <NavBtn>
                         <NavBtnLink to='/register'>
                             S'inscrire
                         </NavBtnLink>
-                    </NavBtn> : <ProfileMenu />}   
+                    </NavBtn>}
                 </NavBarContainer>
             </Nav>
         </>
@@ -74,4 +71,3 @@ const Navbar = ({ toggle }) => {
 }
 
 export default Navbar;
-

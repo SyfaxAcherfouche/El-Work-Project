@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, createContext } from 'react';
+import cookie from "react-cookies";
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Home from './pages/index'
@@ -9,20 +10,32 @@ import Login from './pages/login'
 import Register from './pages/register'
 import Profile from './pages/profile'
 import MonProfileFreelance from './pages/MonProfileFreelance'
+
+const userContext = createContext(null)
+
 function App() {
+  const [token, setToken] = useState({
+    token: cookie.load("token"),
+    user: cookie.load("user")
+  });
+  console.log(token, 'f l app.js')
   return (
-    <Router>
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/about" component={About} />
-        <Route path="/freelance" exact component={Freelance} />
-        <Route path="/besoin" component={Besoin} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/freelance/profile/" component={Profile} />
-        <Route path="/mon-profile-freelance" component={MonProfileFreelance} />
-      </Switch>
-    </Router>
+    <div>
+      <userContext.Provider value={{token, setToken}}>
+        <Router>
+          <Switch>
+            <Route path="/" exact render={()=> <Home userContext={userContext} />} />
+            <Route path="/about" component={About} />
+            <Route path="/freelance" exact render={()=> <Freelance userContext={userContext} />} />
+            <Route path="/besoin" component={Besoin} />
+            <Route path="/login" render={()=> <Login userContext={userContext} />} />
+            <Route path="/register" component={Register} />
+            <Route path="/freelance/profile/" render={()=> <Profile userContext={userContext} />} />
+            <Route path="/mon-profile-freelance" component={MonProfileFreelance} />
+          </Switch>
+        </Router>
+      </userContext.Provider>
+    </div>
   );
 }
 
