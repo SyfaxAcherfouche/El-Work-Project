@@ -23,7 +23,6 @@ const register = (req, res) => {
             if (data) {
                 return res.status(401).json({ error: 'User already exist' })
             }
-            cloudinary.uploader.upload(req.file.path, (error, result) => {
                 bcrypt.genSalt(10, (err, salt) => {
                     bcrypt.hash(req.body.user_password, salt, (err, hash) => {
                         const user = new User({
@@ -34,7 +33,6 @@ const register = (req, res) => {
                             user_phone_number: req.body.user_phone_number,
                             user_adress: req.body.user_adress,
                             user_gender: req.body.user_gender,
-                            freelance_id: req.body.freelance_id,
                             user_isFreelance: req.body.user_isFreelance,
                         })
                         user
@@ -53,7 +51,7 @@ const register = (req, res) => {
                             });
                     });
                 });
-            })
+            
         })
 
 }
@@ -103,13 +101,15 @@ const updateUser = (req, res) => {
     User.findOne({ _id: req.params.id }, {
         'user_first_name': req.body.user_first_name,
         'user_last_name': req.body.user_last_name,
+        'user_email': req.body.user_email,
         'user_phone_number': req.body.user_phone_number,
         'user_adress': req.body.user_adress,
-        user_img_url: result.url,
+        'user_img_url': req.user_img_url,
         'user_isFreelance': req.body.user_isFreelance
     })
         .then(newUser => res.status(200).json(newUser))
         .catch(error => res.status(400).json(error))
+        console.log(req)
 }
 
 const userController = {

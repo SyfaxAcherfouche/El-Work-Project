@@ -9,7 +9,7 @@ import { aboutObjTwo } from "../components/AboutSectionThree/Data";
 import AboutSectionFour from "../components/AboutSectionFour";
 import { aboutObjThree } from "../components/AboutSectionFour/Data";
 import Footer from "../components/Footer";
-const Home = () => {
+const Home = ({userContext}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => {
@@ -18,7 +18,7 @@ const Home = () => {
   return (
     <>
       <Sidebar isOpen={isOpen} toggle={toggle} />
-      <Navbar toggle={toggle} />
+      <Navbar toggle={toggle} userContext={userContext} />
       <AboutSectionOne />
       <AboutSectionTwo {...aboutObjOne} />
       <AboutSectionThree {...aboutObjTwo} />

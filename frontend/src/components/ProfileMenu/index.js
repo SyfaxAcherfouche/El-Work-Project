@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useContext } from "react";
 import cookie from 'react-cookies'
+import { useHistory } from "react-router-dom";
 import {
   ProfileImage,
   Path,
@@ -20,8 +20,9 @@ const ProfileMenu = ({ userContext }) => {
   const { token, setToken } = useContext(userContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const name = token?.user?.user_first_name + " " + token.user?.user_last_name;
-  console.log(token);
+  const history = useHistory();
+
+  console.log(token, "mdrrrr");
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -29,19 +30,17 @@ const ProfileMenu = ({ userContext }) => {
     setAnchorEl(null);
   };
 
-  const history = useHistory();
 
   const removeToken = () => {
     setToken(null)
+    cookie.remove('token')
+    cookie.remove('user')
   };
 
-  const handelSubmitClick = (e) => {
+  const logout = (e) => {
     e.preventDefault();
     removeToken();
     handleClose();
-  };
-  const logout = (e) => {
-    handelSubmitClick(e);
     history.push("/");
   };
   return (
@@ -76,11 +75,11 @@ const ProfileMenu = ({ userContext }) => {
         open={open}
         onClose={handleClose}
       >
-        <Path>
-          <MenuItem onClick={handleClose}>{name}</MenuItem>
+        <Path to='/compte'>
+          <MenuItem onClick={handleClose}>{token?.token?.user?.user_first_name + " " + token?.token.user?.user_last_name}</MenuItem>
         </Path>
-        <Path to="/freelance/mon-profile-freelance">
-          <MenuItem onClick={handleClose}>Mon profile</MenuItem>
+        <Path to={`/${token?.token?.user?.user_first_name + token?.token.user?.user_last_name}`}>
+          <MenuItem onClick={handleClose}>Mon Espace Freelance</MenuItem>
         </Path>
         <LogOut onClick={logout}>Déconnecter</LogOut>
       </Menu>

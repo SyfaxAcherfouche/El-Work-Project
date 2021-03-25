@@ -49,25 +49,15 @@ export const Price = styled.h3`
     color: #b3b1b1;
     font-size: 1.5em;
 `
-export const ProfileContact = styled.div`
+export const ProfileCategory = styled.div`
     display: flex;
+    flex-flow: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     width: 20%;
     height: 100%;
+    padding: 2em;
 ` 
-export const Button = styled.button`
-    border: 1px solid #27DEBF;
-    background-color: transparent;
-    color: #27DEBF;
-    padding: 6px;
-    
-    &:hover {
-        color: #fff;
-        background-color: #27DEBF;
-        border: none;
-    }
-`
 export const FreelanceInformation = styled.div`
     display: flex;
     justify-content: space-around;
@@ -83,7 +73,7 @@ export const Competences = styled.div`
     width: 29vw;
     height: 100%;
     min-height: 37vh;
-    padding: 1em;
+    padding: 1.5em;
     background-color:  rgb(252, 252, 252);
     border-radius: 2em;
     
@@ -118,4 +108,34 @@ export const SpinnerWrapper = styled.div`
     align-items: center;
     width: 100vw;
     height: 80vh;
+`
+export const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    width: 100%;
+    height: 6em; 
+` 
+export const ButtonUpdate = styled.button`
+    border-radius: 50px;
+    background: transparent;
+    color: #27debf;
+    white-space: nowrap;
+    padding: 10px 22px;
+    margin: 6px 2em 6px 6px;
+    font-size: 16px;
+    outline: none;
+    border: 1px solid #27debf;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background: #27debf;
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+    }
 `

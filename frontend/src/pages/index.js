@@ -9,9 +9,7 @@ import Footer from '../components/Footer'
 const Home = ({userContext}) => {
     const [ isOpen, setIsOpen ] = useState(false);
     console.log(userContext, 'f el home')
-    useEffect(() => {
-        console.log(cookie.loadAll())
-    }, [])
+
     const toggle = () => {
         setIsOpen(!isOpen)
     }

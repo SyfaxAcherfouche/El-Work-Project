@@ -1,5 +1,6 @@
 const Freelance = require('../models/freelanceModel');
-const { validationResult } = require('express-validator')
+const { validationResult } = require('express-validator');
+const User = require('../models/userModel');
 
 const addFreelance = (req, res) => {
     var errors = validationResult(req)
@@ -17,10 +18,14 @@ const addFreelance = (req, res) => {
     freelance
         .save()
         .then(result => {
-            res.status(201).json({
-                message: "Handling POST requests to /freelance",
-                createdFreelance: result
-            });
+            User.findByIdAndUpdate(result.user_id,{user_isFreelance: true, freelance_id:result._id}).then(() => {
+                res.status(201).json({
+                  message: "Handling POST requests to /freelance",
+                  createdFreelance: result,
+                });
+            }).catch(err => res.status(500).json({
+                error: err
+            }))
         }).catch(err => {
             console.log(err);
             res.status(500).json({

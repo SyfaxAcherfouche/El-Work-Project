@@ -180,7 +180,6 @@ const Form = () => {
             user_phone_number: phoneNumber,
             user_adress: adress,
             user_gender: gender,
-            freelance_id: {},
             user_isFreelance: false,
         }),
         };

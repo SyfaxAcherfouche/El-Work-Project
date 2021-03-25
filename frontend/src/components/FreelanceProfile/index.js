@@ -40,7 +40,7 @@ const FreelanceProfile = ({userContext}) => {
   const fetchFreelance = async () => {
     setLoading(true);
     const id = window.location.href.split("/").splice(5, 1);
-    const Auth = token.token
+    const Auth = token?.token
     const requestOptions = {
       method: 'GET',
       headers: {
@@ -76,7 +76,11 @@ const FreelanceProfile = ({userContext}) => {
     <div>
       <Profile>
         <ProfileImage>
-          <Image src={freelance.user_img_url} />
+          {freelance?.user_img_url ? (
+            <Image src={freelance?.user_img_url} />
+          ) : (
+            <Image src="images/AnonymeProfileImage.png" />
+          )}
         </ProfileImage>
         <ProfileInfo>
           <Name>{freelance.name}</Name>
@@ -109,7 +113,9 @@ const FreelanceProfile = ({userContext}) => {
           ))}
         </Competences>
         <Description>
-          <DescriptionTitle>{freelance.name} en quelques mots </DescriptionTitle>
+          <DescriptionTitle>
+            {freelance.name} en quelques mots{" "}
+          </DescriptionTitle>
           <DescriptionText>
             {freelance?.freelance_id?.freelance_description}
           </DescriptionText>

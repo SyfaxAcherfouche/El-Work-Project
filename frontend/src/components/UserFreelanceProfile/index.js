@@ -1,8 +1,17 @@
-import React, { useState, useEffect } from "react";
-import cookie from "react-cookies";
+import React, { useState, useEffect, useContext } from "react";
 import { MdLocationOn } from "react-icons/md";
-import { Chip } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  Chip,
+  TextField,
+  InputLabel,
+  Select,
+  MenuItem,
+  ListSubheader,
+} from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import Spinner from '../Spinner/index'
+import { CompetencesSuggestion, CatégorySuggestion } from "./Data";
 import {
   Profile,
   ProfileImage,
@@ -11,25 +20,91 @@ import {
   Name,
   Title,
   Adress,
-  Price,
-  ProfileContact,
-  Button,
+  ProfileCategory,
   FreelanceInformation,
   Competences,
   Description,
   DescriptionTitle,
   DescriptionText,
-  SpinnerWrapper
+  SpinnerWrapper,
+  ButtonWrapper,
+  ButtonUpdate
 } from "./UserFreelanceProfileElements";
-
-const UserFreelanceProfile = () => {
-
+//import TransferList from '../ListTransfert/index'
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  margin: {
+    margin: theme.spacing(1),
+  },
+  withoutLabel: {
+    marginTop: theme.spacing(3),
+  },
+  textField: {
+    width: "25ch",
+  },
+}));
+const FreelanceProfile = ({userContext}) => {
+  const classes = useStyles();
+  /* const [values, setValues] = React.useState({
+    amount: "",
+    weight: "",
+    weightRange: ""
+  }); */
   const [loading, setLoading] = useState(false);
-  const user = cookie.load("user");
-  useEffect(() => {
-    
-  }, []);
+  const { token, setToken } = useContext(userContext);
+  const name = token?.user?.user_first_name + " " + token?.user?.user_last_name;
+  /*  const handleChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  }; */
+  const [competences, setCompetences] = useState([])
+  const [title, setTitle] = useState('');
+  const [tarif, setTarif] = useState('');
+  const [description, setDescription] = useState([]);
+  const [category, setCategory] = useState([])  
+  const handleChangeCompetence = (e) => {
+    setCompetences(e.target.value);
+  }
+  const handleChangeTitle= (e) => {
+    setTitle(e.target.value);
+  }
+  const handleChangeTarif = (e) => {
+    setTarif(e.target.value);
+  }
+  const handleChangeDescription = (e) => {
+    setDescription(e.target.value);
+  }
+  const handleChangeCategory = (e) => {
+    setCategory(e.target.value)
+  }
 
+  const update = (e) => {
+    e.preventDefault()
+    setLoading(true)
+    
+    const requestOptions = {
+      method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          freelance_competences: competences,
+          freelance_title: title,
+          freelance_tarif: tarif,
+          freelance_description: description, 
+          user_id: token.user._id,
+          category_id: category
+        })
+      };
+      fetch("http://localhost:4000/freelance", requestOptions)
+      .then((response) => response.json())
+      .then(setLoading(false))
+      .catch((err) => {
+        console.log(err);
+            setLoading(false);
+          });
+      
+  }
   return loading ? (
     <SpinnerWrapper>
       <Spinner />
@@ -38,74 +113,119 @@ const UserFreelanceProfile = () => {
     <div>
       <Profile>
         <ProfileImage>
-          <Image src={user.user_img_url} />
+          {token?.user.user_img_url ? (
+            <Image src={token?.user.user_img_url} />
+          ) : (
+            <Image src="images/AnonymeProfileImage.png" />
+          )}
         </ProfileImage>
         <ProfileInfo>
-          <Name>{user.name}</Name>
-          <Title>{user.freelance_id.freelance_title} </Title>
+          <Name>{name}</Name>
+          <Title>
+            <TextField
+              label="Titre"
+              id="title"
+              defaultValue={token?.user?.freelance_id?.freelance_title}
+              className={classes.textField}
+              onChange={handleChangeTitle}
+              margin="normal"
+              variant="outlined"
+            />
+          </Title>
           <Adress>
             <MdLocationOn style={{ marginRight: "2px" }} />
-            {user.user_adress}
+            {token?.user?.user_adress}
           </Adress>
-          <Price>A Partir de {user.freelance_id.freelance_tarif} DA</Price>
+          <TextField
+            label="Prix"
+            id="tarif"
+            defaultValue={token?.user?.freelance_id?.freelance_tarif}
+            onChange={handleChangeTarif}
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
         </ProfileInfo>
-        <ProfileContact>
-          <a href={`mailto:${user.user_email}`}>
-            <Button>Contacter</Button>
-          </a>
-        </ProfileContact>
       </Profile>
       <FreelanceInformation>
         <Competences>
           <DescriptionTitle>Competences</DescriptionTitle>
-          {user.freelance_id.freelance_competences.map((chip) => (
-            <Chip label={chip} variant="outlined" style={{ margin: "0.5em" }} />
-          ))}
+          <Autocomplete
+            multiple
+            id="tags-filled"
+            options={CompetencesSuggestion.map((option) => option.title)}
+            defaultValue={[
+              token.token?.user?.freelance_id?.freelance_competences,
+            ]}
+            onChange={handleChangeCompetence}
+            freeSolo
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip
+                  variant="outlined"
+                  label={option}
+                  {...getTagProps({ index })}
+                />
+              ))
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="filled"
+                label="Competences"
+                placeholder="Competences"
+              />
+            )}
+          />
+          <DescriptionTitle>Catégories</DescriptionTitle>
+          <Autocomplete
+            multiple
+            id="tags-filled-2"
+            options={CatégorySuggestion.map((option) => option.title)}
+            onChange={handleChangeCompetence}
+            freeSolo
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip
+                  variant="outlined"
+                  label={option}
+                  {...getTagProps({ index })}
+                />
+              ))
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="filled"
+                label="Competences"
+                placeholder="Competences"
+              />
+            )}
+          />
         </Competences>
         <Description>
-          <DescriptionTitle>Description</DescriptionTitle>
+          <DescriptionTitle>Mon Profile</DescriptionTitle>
           <DescriptionText>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste, non
-            nihil. Porro quas totam adipisci, voluptates maxime dolor? Amet
-            voluptates, et suscipit recusandae voluptate repudiandae. Alias
-            atque ratione ex provident? Sequi tenetur iste, culpa, maiores rerum
-            soluta ducimus quisquam aliquid nulla voluptas neque, est maxime
-            esse quidem blanditiis velit delectus totam. Ea dolorum, voluptas
-            natus suscipit asperiores expedita magni modi. Natus perferendis
-            quae at eius sunt voluptatem voluptate repudiandae ea, obcaecati
-            quod vitae incidunt eligendi molestias odit doloremque ipsam minima
-            nemo deserunt dolores? Eligendi ex dignissimos architecto iure, sit
-            qui. Alias asperiores dolores soluta odit illum fuga qui ea, dolor
-            laboriosam at quod nam vitae corporis? Iste recusandae eum possimus,
-            assumenda quis provident rerum voluptate, explicabo maxime quo,
-            impedit autem? Quis cupiditate commodi vel expedita, amet
-            accusantium recusandae, magni praesentium, maxime temporibus numquam
-            molestias deserunt. Possimus eum, aliquid nesciunt autem iure porro
-            modi accusantium rerum voluptate incidunt quia dicta sit? Laudantium
-            nostrum aliquam nulla. Alias officiis facere natus atque neque
-            voluptatem blanditiis assumenda vero quibusdam nulla excepturi nam
-            deleniti repellendus veniam, tempora nostrum iure provident
-            voluptatum! Reprehenderit voluptatum laboriosam dolorum. Incidunt
-            consectetur quo magni culpa dolorem provident fuga laudantium
-            molestias at laboriosam, nihil minima totam nobis excepturi
-            corrupti, repudiandae pariatur earum. Dolores necessitatibus
-            adipisci impedit nobis sint rerum molestias animi. Cupiditate iusto
-            ipsa deserunt, facilis amet aperiam suscipit blanditiis accusamus
-            pariatur velit corporis sint debitis esse illo voluptatum, delectus,
-            tempore itaque sit! Earum culpa saepe veritatis quas tenetur, error
-            quaerat? Ducimus voluptates saepe id ex libero cupiditate possimus
-            reprehenderit facere quia laborum aperiam fugiat excepturi dolores
-            vero consequatur natus, sint nesciunt labore fuga quod quaerat?
-            Reprehenderit rem omnis facilis. Voluptatum. Doloremque illo
-            eligendi, eveniet minima nemo iste voluptatem modi. Explicabo, modi!
-            Qui sunt itaque et error praesentium quos, eligendi similique
-            obcaecati repellendus quidem, eius sapiente quas quo doloribus, sed
-            assumenda?
+            <TextField
+              id="outlined-multiline-static"
+              label="Mon Profile"
+              defaultValue={
+                token.token?.user?.freelance_id?.freelance_description
+              }
+              onChange={handleChangeDescription}
+              multiline
+              rows={12}
+              fullWidth
+              variant="filled"
+            />
           </DescriptionText>
         </Description>
       </FreelanceInformation>
+      <ButtonWrapper>
+        <ButtonUpdate>Enregistrer</ButtonUpdate>
+      </ButtonWrapper>
     </div>
   );
 };
 
-export default UserFreelanceProfile;
+export default FreelanceProfile;

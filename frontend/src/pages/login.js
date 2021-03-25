@@ -94,7 +94,7 @@ const Login = (props) => {
       .then((response) => response.json())
       .then((res) => {
         setIsLoading(false);
-        setToken({token: res.token})
+        setToken({token: {token: res.token, user: res.user}})
         const expires = new Date();
         expires.setDate(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7 days
         cookie.save("token", res.token, {
@@ -103,13 +103,12 @@ const Login = (props) => {
         cookie.save("user", res.user, {
           path: "/",
         });
+        history.push("/")
       })
       .catch((err) => {
         console.log(err);
         setIsLoading(false);
       });
-      
-      history.push("/")
   }
   
 

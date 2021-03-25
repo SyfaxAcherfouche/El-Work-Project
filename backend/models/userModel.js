@@ -39,7 +39,10 @@ const userSchema = new Schema({
                 type: String,
                 required: true
         },
-        user_img_url: String,
+        user_img_url: {
+                type: String,
+                required: false
+        },
         freelance_id: {
                 type: Schema.Types.ObjectId,
                 ref: 'Freelance',

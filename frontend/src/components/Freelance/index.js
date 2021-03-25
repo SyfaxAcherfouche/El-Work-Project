@@ -31,7 +31,7 @@ const FreelanceGrid = ({userContext}) => {
       const data = await fetch('http://localhost:4000/users');
       const items = await data.json()
       const freelance = await items.filter(el => el.user_isFreelance === true)
-      console.log(items)
+      console.log(items, 'je suis items')
       setItems(items)
       console.log(freelance, "je suis freelance filtré");
     };
