@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     width: "25ch",
   },
 }));
-const FreelanceProfile = ({userContext}) => {
+const FreelanceProfile = ({ userContext }) => {
   const classes = useStyles();
   /* const [values, setValues] = React.useState({
     amount: "",
@@ -63,11 +63,27 @@ const FreelanceProfile = ({userContext}) => {
   const [title, setTitle] = useState('');
   const [tarif, setTarif] = useState('');
   const [description, setDescription] = useState([]);
-  const [category, setCategory] = useState([])  
-  const handleChangeCompetence = (e) => {
-    setCompetences(e.target.value);
+  const [category, setCategory] = useState([])
+  const [selectedCategories, setSelectedCategories] = useState([])
+
+  useEffect(() => {
+    setLoading(true)
+    fetch('http://localhost:4000/category')
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        setCategory(data)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setLoading(false)
+      })
+  }, [])
+  const handleChangeCompetence = (e,newValue) => {
+    setCompetences(newValue);
   }
-  const handleChangeTitle= (e) => {
+  const handleChangeTitle = (e) => {
     setTitle(e.target.value);
   }
   const handleChangeTarif = (e) => {
@@ -76,34 +92,41 @@ const FreelanceProfile = ({userContext}) => {
   const handleChangeDescription = (e) => {
     setDescription(e.target.value);
   }
-  const handleChangeCategory = (e) => {
-    setCategory(e.target.value)
+  const handleChangeCategory = (e, newValue) => {
+    console.log(newValue)
+    newValue.forEach(el => {
+      setSelectedCategories([...selectedCategories, category.find(x => x.category_title == el)])
+      console.log(selectedCategories)
+    })
   }
 
   const update = (e) => {
     e.preventDefault()
     setLoading(true)
-    
+
     const requestOptions = {
       method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          freelance_competences: competences,
-          freelance_title: title,
-          freelance_tarif: tarif,
-          freelance_description: description, 
-          user_id: token.user._id,
-          category_id: category
-        })
-      };
-      fetch("http://localhost:4000/freelance", requestOptions)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        freelance_competences: competences,
+        freelance_title: title,
+        freelance_tarif: tarif,
+        freelance_description: description,
+        user_id: token.user._id,
+        category_id: selectedCategories
+      })
+    };
+    fetch("http://localhost:4000/freelance", requestOptions)
       .then((response) => response.json())
-      .then(setLoading(false))
+      .then((data) => {
+        console.log(data)
+        setLoading(false)
+      })
       .catch((err) => {
         console.log(err);
-            setLoading(false);
-          });
-      
+        setLoading(false);
+      });
+
   }
   return loading ? (
     <SpinnerWrapper>
@@ -181,8 +204,8 @@ const FreelanceProfile = ({userContext}) => {
           <Autocomplete
             multiple
             id="tags-filled-2"
-            options={CatégorySuggestion.map((option) => option.title)}
-            onChange={handleChangeCompetence}
+            options={category.map((option) => option.category_title)}
+            onChange={handleChangeCategory}
             freeSolo
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
@@ -222,7 +245,7 @@ const FreelanceProfile = ({userContext}) => {
         </Description>
       </FreelanceInformation>
       <ButtonWrapper>
-        <ButtonUpdate>Enregistrer</ButtonUpdate>
+        <ButtonUpdate onClick={update}>Enregistrer</ButtonUpdate>
       </ButtonWrapper>
     </div>
   );
