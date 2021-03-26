@@ -104,12 +104,12 @@ const updateUser = (req, res) => {
         'user_email': req.body.user_email,
         'user_phone_number': req.body.user_phone_number,
         'user_adress': req.body.user_adress,
-        'user_img_url': req.user_img_url,
-        'user_isFreelance': req.body.user_isFreelance
-    })
+        'user_gender': req.body.user_gender,
+        'user_img_url': req.body.user_img_url
+        })
         .then(newUser => res.status(200).json(newUser))
-        .catch(error => res.status(400).json(error))
-        console.log(req)
+        .catch(error => console.log(error))
+        
 }
 
 const userController = {

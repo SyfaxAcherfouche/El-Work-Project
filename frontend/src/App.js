@@ -11,6 +11,7 @@ import Register from './pages/register'
 import Profile from './pages/profile'
 import MonEspaceFreelance from "./pages/MonEspaceFreelance";
 import Account from "./pages/MonCompte";
+import HowItWorks from './pages/howItWorks';
 
 const userContext = createContext(null)
 
@@ -28,6 +29,7 @@ function App() {
           <Switch>
             <Route path="/" exact render={()=> <Home userContext={userContext} />} />
             <Route path="/about" render={()=> <About userContext={userContext} />} />
+            <Route path="/comment-ça-marche" render={()=> <HowItWorks userContext={userContext} />} />
             <Route path="/freelance" exact render={()=> <Freelance userContext={userContext} />} />
             <Route path="/besoin" component={Besoin} />
             <Route path="/login" render={()=> <Login userContext={userContext} />} />

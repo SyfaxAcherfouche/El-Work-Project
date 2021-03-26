@@ -377,7 +377,7 @@ const Form = () => {
                     <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                         <InputLabel htmlFor="outlined-adornment-password">Confirmez votre mot de passe</InputLabel>
                         <OutlinedInput
-                            id="outlined-adornment-password"
+                            id="outlined-adornment-passwordConfi"
                             type={passwordConfi.showPassword ? 'text' : 'password'}
                             value={passwordConfi.password}
                             onChange={handleChangePasswordConfi('password')}

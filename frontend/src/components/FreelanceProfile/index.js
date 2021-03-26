@@ -62,10 +62,10 @@ const FreelanceProfile = ({userContext}) => {
       freelance_competences: item[0].freelance_id.freelance_competences,
       name: item[0].user_last_name + " " + item[0].user_first_name,
     })
+    setLoading(false);
   };
   useEffect(() => {
     fetchFreelance()
-    setLoading(false);
   }, [setFreelance]);
 
   return loading ? (

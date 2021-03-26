@@ -22,7 +22,7 @@ const ProfileMenu = ({ userContext }) => {
   const open = Boolean(anchorEl);
   const history = useHistory();
 
-  console.log(token, "mdrrrr");
+  console.log(token, "f profile menu");
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,7 +30,7 @@ const ProfileMenu = ({ userContext }) => {
     setAnchorEl(null);
   };
 
-
+  const user = cookie.load('user')
   const removeToken = () => {
     setToken(null)
     cookie.remove('token')
@@ -45,8 +45,8 @@ const ProfileMenu = ({ userContext }) => {
   };
   return (
     <ProfileMenuWrapper>
-      {token?.user?.user_img_url ? (
-        <ProfileImage src={token?.user?.user_img_url} onClick={handleMenu} />
+      {user?.user_img_url ? (
+        <ProfileImage src={user?.user_img_url} onClick={handleMenu} />
       ) : (
         <IconButton
           aria-label="account of current user"
@@ -76,10 +76,10 @@ const ProfileMenu = ({ userContext }) => {
         onClose={handleClose}
       >
         <Path to='/compte'>
-          <MenuItem onClick={handleClose}>{token?.token?.user?.user_first_name + " " + token?.token.user?.user_last_name}</MenuItem>
+          <MenuItem onClick={handleClose}>{user?.user_first_name + " " + user?.user_last_name}</MenuItem>
         </Path>
-        <Path to={`/${token?.token?.user?.user_first_name + token?.token.user?.user_last_name}`}>
-          <MenuItem onClick={handleClose}>Mon Espace Freelance</MenuItem>
+        <Path to={`/${user?.user_first_name + user?.user_last_name}`}>
+          <MenuItem >Mon Espace Freelance</MenuItem>
         </Path>
         <LogOut onClick={logout}>Déconnecter</LogOut>
       </Menu>

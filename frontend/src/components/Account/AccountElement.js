@@ -6,6 +6,14 @@ export const ProfileWrapper = styled.div`
     height: 100%;
     padding: 2em;
 `
+export const CircularWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 80vh;
+    padding: 2em;
+`
 export const InfoWrapper = styled.div`
     display: flex;
     flex-flow: column wrap; 

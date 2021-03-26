@@ -7,7 +7,7 @@ function init(router) {
     router.route('/login').post(userController.login)
     router.route('/users').get(userController.getAllUsers)
     router.route('/users/:id').get(auth, userController.getOneUser)
-    router.route('/users/:id/update').put(auth, multer, userController.updateUser)
+    router.route('/users/:id/update').put( userController.updateUser)
 }
 
 module.exports.init = init

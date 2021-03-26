@@ -2,6 +2,7 @@
 import axios from "axios";
 import React, { useState, useEffect, createContext, useContext } from "react";
 import cookie from "react-cookies";
+import Spinner from '../Spinner/index'
 import {
     ProfileWrapper,
     InfoWrapper,
@@ -12,7 +13,8 @@ import {
     NameWrapper,
     ContactWrapper,
     ButtonWrapper,
-    ButtonUpdate 
+    ButtonUpdate,
+    CircularWrapper
 } from "./AccountElement";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -44,64 +46,96 @@ const Profile = (props) => {
     const [imageurl, setImageurl] = useState("");
     const [image, setImage] = useState("");
     const [loading, setLoading] = useState(false);
+
     const onChange = (e) => {
         setImage(e.target.files[0]);
         setImageurl(URL.createObjectURL(e.target.files[0]));
     };
-    const [infos, setInfos] = useState([]);
+    const [infos, setInfos] = useState({});
     useEffect(() => {
         setInfos(cookie.load("user"));
         console.log(infos, "je suis info");
     }, []);
     
     const onSubmit = async () => {
+        if(image) {
+        const user = cookie.load("user");
+        const token = cookie.load("token");
         const formData = new FormData();
         formData.append("file", image);
         formData.append("upload_preset", preset);
         formData.append("options", options);
-        
-        const user = cookie.load('user')
-        const token = cookie.load('token')
         try {
             setLoading(true);
             const res = await axios.post(url, formData);
-            console.log(res, 'je suis la réponse')
-            const values = {
-            user_first_name: user.user_first_name,
-            user_last_name: user.user_last_name,
-            user_adress: user.user_adress,
-            user_email: user.user_email, 
-            user_gender: user.user_gender, 
-            user_img_url: res.data.secure_url,
-            user_isFreelance: user.user_isFreelance,
-            user_password: user.user_password,
-            user_phone_number: user.user_phone_number
-        };
+                            var values = {
+                                user_first_name: user.user_first_name,
+                                user_last_name: user.user_last_name,
+                                user_adress: user.user_adress,
+                                user_email: user.user_email,
+                                user_gender: user.user_gender,
+                                user_img_url: res.data.secure_url,
+                                user_password: user.user_password,
+                                user_phone_number: user.user_phone_number,
+                            };
         const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": token },
-            body: JSON.stringify(values),
+            headers: {"Authorization": token },
         };
-        const image = await axios.post( "http://localhost:4000/users/"+ user._id +"/update", requestOptions)
-                                    .then((res)=>{
-                                        cookie.save("user", res.user, {
-                                            path: "/",
-                                        });
-                                        console.log(res, 'je suis la reponse 2')
-                                    setInfos(cookie.load("user"));}
-                                        
-                                    )
+        const image = await axios.put( "http://localhost:4000/users/"+ user._id +"/update",values)
+        cookie.save("user", image.data, {
+            path: "/",
+        });
+        console.log(image, 'je suis la reponse 2')
+        setInfos(cookie.load("user"))
         setLoading(false);
         console.log(image.data);
         setImage(image.data.user_img_url);
         } catch (err) {
         console.error(err);
         }
-    };
+        }else{
+            const user = cookie.load('user')
+            //const token = cookie.load('token')
+            try {
+                setLoading(true);
+                var values = {
+                    user_first_name: user.user_first_name,
+                    user_last_name: user.user_last_name,
+                    user_adress: user.user_adress,
+                    user_email: user.user_email,
+                    user_gender: user.user_gender,
+                    user_img_url: user.secure_url,
+                    user_password: user.user_password,
+                    user_phone_number: user.user_phone_number,
+                };
+
+                /* const requestOptions = {
+                    headers: {"Authorization": token },
+                }; */
+                const image = await axios.put( "http://localhost:4000/users/"+ user._id +"/update",values)
+                cookie.save("user", image.data, {
+                    path: "/",
+                });
+                console.log(image, 'je suis la reponse 2')
+                setInfos(cookie.load("user"))
+                setLoading(false);
+                console.log(image.data);
+                setImage(image.data.user_img_url);
+            } catch (err) {
+            console.error(err);
+            }
+        }
+    }
 
     const classes = useStyles();
     const user = cookie.load("user");
     return (
+        <>
+        { loading ? 
+        <CircularWrapper>
+            <Spinner/> 
+        </CircularWrapper>
+        :
         <ProfileWrapper>
             <ImageWrapper>
             {imageurl ? (
@@ -183,6 +217,8 @@ const Profile = (props) => {
             </InfoWrapper>
 
         </ProfileWrapper>
+    }
+    </>
     );
 }
 export default Profile;

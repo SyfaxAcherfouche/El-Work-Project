@@ -29,6 +29,9 @@ const Footer = () => {
     const pathToFreelancePage = () => {
         history.push("/freelance");
     };
+    const pathToHowItWorksPage = () => {
+        history.push("/comment-ça-marche");
+    };
     return (
         <FooterComposant>
             <FooterSections>
@@ -37,7 +40,7 @@ const Footer = () => {
                 </FooterTitle>
                 <FooterList>
                     <FooterRow onClick={pathToAboutPage} >Qui sommes nous ?</FooterRow>
-                    <FooterRow>Comment ça marche ?</FooterRow>
+                    <FooterRow onClick={pathToHowItWorksPage} >Comment ça marche ?</FooterRow>
                     <FooterRow>Pourquoi <Label>El Work</Label>?</FooterRow>
                     <FooterRow>Comment commander ?</FooterRow>
                 </FooterList>

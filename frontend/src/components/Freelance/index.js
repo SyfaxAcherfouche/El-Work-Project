@@ -24,7 +24,6 @@ const FreelanceGrid = ({userContext}) => {
     const [search, setSearch] = useState("");
     const [filteredFreelance, setFilteredFreelance] = useState([]);
     const { token, setToken } = useContext(userContext);
-    
     let numberOfFreelance = filteredFreelance.length;
 
     const fetchFreelance = async () => {
